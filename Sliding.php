@@ -56,8 +56,10 @@ class Pager_Sliding
     var $_curPageSpanPre        = '';
     var $_curPageSpanPost       = '';
     var $_firstPagePre  = '[';
+    var $_firstPageText = '';
     var $_firstPagePost = ']';
     var $_lastPagePre   = '[';
+    var $_lastPageText  = '';
     var $_lastPagePost  = ']';
     var $_spacesBefore  = '';
     var $_spacesAfter   = '';
@@ -117,11 +119,15 @@ class Pager_Sliding
      *  - firstPagePre (string):
      *                         string used before first page number (can be an
      *                         <img/>, a "{", an empty string, or whatever.
+     *  - firstPageText (string):
+     *                         string used in place of first page number
      *  - firstPagePost (string):
      *                         string used after first page number (can be an
      *                         <img/>, a "}", an empty string, or whatever.
      *  - lastPagePre (string):
      *                         similar to firstPagePre.
+     *  - lastPageText (string):
+     *                         similar to firstPageText.
      *  - lastPagePost (string):
      *                         similar to firstPagePost.
      *  - spacesAfterSeparator
@@ -149,6 +155,7 @@ class Pager_Sliding
     {
         $this->_setOptions($options);
         $this->_generatePageData();
+	$this->_setFirstLastText();
 
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
     		$this->links .= $this->_printFirstPage();
@@ -259,9 +266,9 @@ class Pager_Sliding
 
     /**
      * Returns next page ID. If current page is last page
-	 * this function returns FALSE
-	 *
-	 * @return mixed Next pages' ID
+	* this function returns FALSE
+	*
+	* @return mixed Next pages' ID
      * @access public
      */
 	function getNextPageID()
@@ -275,9 +282,9 @@ class Pager_Sliding
 
     /**
      * Returns previous page ID. If current page is first page
-	 * this function returns FALSE
-	 *
-	 * @return mixed Previous pages' ID
+	* this function returns FALSE
+	*
+	* @return mixed Previous pages' ID
      * @access public
      */
 	function getPreviousPageID()
@@ -616,7 +623,7 @@ class Pager_Sliding
     {
         if ($this->_currentPage < $this->_totalPages) {
             $next = $this->_spacesAfter
-    			 . sprintf('<a href="%s" %s title="%s">%s</a>',
+    			. sprintf('<a href="%s" %s title="%s">%s</a>',
                             ( $this->_append ? $this->_url.$this->getNextPageID() :
                                     $this->_url.sprintf($this->_fileName, $this->getNextPageID()) ),
                             $this->_classString,
@@ -644,11 +651,12 @@ class Pager_Sliding
         if ($this->isFirstPage()) {
             return '';
         } else {
-            return sprintf('<a href="%s" %s title="%s">%s1%s</a>',
+            return sprintf('<a href="%s" %s title="%s">%s%s%s</a>',
     			            ( $this->_append ? $this->_url.'1' : $this->_url.sprintf($this->_fileName, 1) ),
                             $this->_classString,
                             $this->_altPage.' 1',
                             $this->_firstPagePre,
+                            $this->_firstPageText,
                             $this->_firstPagePost)
                  . $this->_spacesBefore . $this->_spacesAfter;
 
@@ -670,12 +678,12 @@ class Pager_Sliding
         if ($this->isLastPage()) {
             return '';
         } else {
-            return sprintf('<a href="%s" %s title="%s">%s%d%s</a>',
+            return sprintf('<a href="%s" %s title="%s">%s%s%s</a>',
                             ( $this->_append ? $this->_url.$this->numPages() : $this->_url.sprintf($this->_fileName, $this->numPages()) ),
                             $this->_classString,
                             $this->_altPage.' '.$this->numPages(),
                             $this->_lastPagePre,
-                            $this->numPages(),
+ 			    $this->_lastPageText,
                             $this->_lastPagePost);
         }
     }
@@ -705,6 +713,28 @@ class Pager_Sliding
         } else {
             $this->_pageData = array();
         }
+    }
+
+
+    // }}}
+    // {{{ _setFirstLastText()
+
+    /**
+     * sets the private _firstPageText, _lastPageText variables
+     * based on whether they were set in the options
+     *
+     * @return 
+     * @access private
+     */
+    function _setFirstLastText()
+    {
+        if ($this->_firstPageText == '') {
+            $this->_firstPageText = '1';
+	}
+
+        if ($this->_lastPageText == '') {
+	    $this->_lastPageText = '${this->numPages()}';
+	}
     }
 
     // }}}
@@ -792,8 +822,10 @@ class Pager_Sliding
             'spacesAfterSeparator',
             'curPageLinkClassName',
             'firstPagePre',
+            'firstPageText',
             'firstPagePost',
             'lastPagePre',
+            'lastPageText',
             'lastPagePost',
             'itemData',
             'clearIfVoid',

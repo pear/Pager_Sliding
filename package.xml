@@ -21,15 +21,21 @@
   <date>2003-??-??</date>
   <state>stable</state>
   <notes>
-    <![CDATA[
-    - reduced calls to internal methods
-    - Added two new variables:
-      * firstPageText
-      * lastPageText
-      They allow changing the default value "[1]" to "First", for instance.
-      Same for last number.
-      If they are not set, they default to the number.
-    ]]>
+<![CDATA[
+- changed from this (supposing currentPage==2):
+    [1]  < 2 3 4 5 6 > [N]
+  to:
+    [1]  < 1 2 3 4 5 > [N]
+  i.e. now the link to the first/last page can be redundant,
+  but the pager acts in a more intuitive way
+- getOffsetByPageId() now works as expected, also in "expanded" mode
+- reduced calls to internal methods
+- Added two new variables:
+  * firstPageText
+  * lastPageText
+  They allow changing the default value "[1]" to "First", for instance.
+  Same for last number. If they are not set, they default to the number.
+]]>
   </notes>
 
   <filelist>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "../package.dtd">
-<package version="1.0">
+<package version="1.2">
  <name>Pager_Sliding</name>
  <summary>Sliding Window Pager.</summary>
  <description>
@@ -17,12 +17,13 @@
  </maintainers>
 
  <release>
-  <version>1.1.6</version>
-  <date>2002-11-22</date>
+  <version>1.2</version>
+  <date>2002-12-13</date>
   <state>stable</state>
   <notes>
-   This is the first release.
+   Added pageID optional parameter to getLinks().
   </notes>
+
   <filelist>
    <dir name="/" baseinstalldir="Pager">
     <file role="php" name="Sliding.php" />
@@ -32,5 +33,30 @@
     <file role="doc" name="examples/Sliding_example4.php" />
    </dir>
   </filelist>
+
  </release>
+
+
+ <changelog>
+
+	  <release>
+	    <version>1.2</version>
+	    <date>2002-12-13</date>
+	    <state>stable</state>
+	    <notes>
+	      Added pageID optional parameter to getLinks().
+          If it is specified, links for that page are provided instead of current one.
+	    </notes>
+	  </release>
+
+	  <release>
+	    <version>1.1.6</version>
+	    <date>2002-11-22</date>
+	    <state>stable</state>
+	    <notes>
+	      This is the initial release of the Pager_Sliding package.
+	    </notes>
+	  </release>
+
+  </changelog>
 </package>

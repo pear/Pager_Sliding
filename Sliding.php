@@ -48,21 +48,23 @@ class Pager_Sliding
     var $_altPage     = 'page';
     var $_prevImg     = '&laquo;';
     var $_nextImg     = '&raquo;';
-    var $_expanded     = true;
+    var $_expanded    = true;
     var $_separator   = '|';
     var $_spacesBeforeSeparator = 3;
     var $_spacesAfterSeparator  = 3;
     var $_curPageLinkClassName  = '';
-    var $_curPageSpanPre    = '';
-    var $_curPageSpanPost   = '';
+    var $_curPageSpanPre        = '';
+    var $_curPageSpanPost       = '';
     var $_firstPagePre  = '[';
     var $_firstPagePost = ']';
     var $_lastPagePre   = '[';
     var $_lastPagePost  = ']';
-    var $_spacesBefore    = '';
-    var $_spacesAfter     = '';
-    var $_itemData        = null;
-    var $_clearIfVoid     = true;
+    var $_spacesBefore  = '';
+    var $_spacesAfter   = '';
+    var $_itemData      = null;
+    var $_clearIfVoid   = true;
+    var $_useSessions   = false;
+    var $_sessionVar    = 'setPerPage';
 
     // }}}
 
@@ -128,6 +130,11 @@ class Pager_Sliding
      *               (string): name of CSS class used for current page link.
      *  - clearIfVoid(bool):   if there's only one page, don't display pager.
      *  - itemData   (array):  array of items to page.
+     *  - useSessions (bool):  if true, number of items to display per page is
+     *                         stored in the $_SESSION[$_sessionVar] var.
+     *  - sessionVar (string): name of the session var for perPage value.
+     *                         A value != from default can be useful when
+     *                         using more than one Pager istance in the page.
      * -------------------------------------------------------------------------
      * REQUIRED options are:
      *  - fileName IF append==false (default is true)
@@ -138,7 +145,7 @@ class Pager_Sliding
      *                          their values.
      * @access public
      */
-    function Pager_Sliding($options)
+    function Pager_Sliding($options = array())
     {
         $this->_setOptions($options);
         $this->_generatePageData();
@@ -403,6 +410,45 @@ class Pager_Sliding
                     'last'  => $last,
                     'all'   => $all
                 );
+    }
+
+    // }}}
+    // {{{ getPerPageSelectBox()
+
+    /**
+     * Returns a string with a XHTML SELECT menu,
+     * useful for letting the user choose how many items per page should be
+     * displayed. If parameter useSessions is TRUE, this value is stored in
+     * a session var. The string isn't echoed right now so you can use it
+     * with template engines.
+     *
+     * @param integer $start
+     * @param integer $end
+     * @param integer $step
+     * @return string xhtml select box
+     * @access public
+     */
+    function getPerPageSelectBox($start=5, $end=30, $step=5)
+    {
+        $start = (int)$start;
+        $end   = (int)$end;
+        $step  = (int)$step;
+        if(!empty($_SESSION["$this->_sessionVar"])) {
+            $selected = (int)$_SESSION["$this->_sessionVar"];
+        } else {
+            $selected = $start;
+        }
+
+        $tmp = '<select name="'.$this->_sessionVar.'">';
+        for($i=$start; $i<=$end; $i+=$step) {
+            $tmp .= '<option value="'.$i.'"';
+            if($i == $selected) {
+                $tmp .= ' selected="selected"';
+            }
+            $tmp .= '>'.$i.'</option>';
+        }
+        $tmp .= '</select>';
+        return $tmp;
     }
 
     // }}}
@@ -724,7 +770,7 @@ class Pager_Sliding
      */
     function _setOptions($options)
     {
-        global $HTTP_GET_VARS;
+        global $_GET, $_REQUEST, $_SESSION;
 
         $allowed_options = array(
             'totalItems',
@@ -750,7 +796,9 @@ class Pager_Sliding
             'lastPagePre',
             'lastPagePost',
             'itemData',
-            'clearIfVoid'
+            'clearIfVoid',
+            'useSessions',
+            'sessionVar'
         );
 
         foreach($options as $key => $value) {
@@ -792,6 +840,17 @@ class Pager_Sliding
             $this->_perPage = 1;
         }
 
+        if(!empty($_REQUEST["$this->_sessionVar"])) {
+            $this->_perPage = max(1, (int)$_REQUEST["$this->_sessionVar"]);
+            if($this->_useSessions) {
+                $_SESSION["$this->_sessionVar"] = $this->_perPage;
+            }
+        }
+
+        if(!empty($_SESSION["$this->_sessionVar"])) {
+             $this->_perPage = $_SESSION["$this->_sessionVar"];
+        }
+
         for($i=0; $i<$this->_spacesBeforeSeparator; $i++) {
             $this->_spacesBefore .= '&nbsp;';
         }
@@ -800,7 +859,7 @@ class Pager_Sliding
             $this->_spacesAfter .= '&nbsp;';
         }
 
-        $this->_currentPage = max((int)@$HTTP_GET_VARS[$this->_urlVar], 1);
+        $this->_currentPage = max((int)@$_GET[$this->_urlVar], 1);
     }
 
     // }}}

@@ -29,7 +29,7 @@ define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
 define('CURRENT_PATHNAME', str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
 
 /**
- * Pager_Sliding - Sliding Window Pager
+ * Pager_Sliding - Generic data paging class  ("sliding window" style)
  *
  * Usage examples can be found in the doc provided
  *

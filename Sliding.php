@@ -714,7 +714,6 @@ class Pager_Sliding
      * sets the private _firstPageText, _lastPageText variables
      * based on whether they were set in the options
      *
-     * @return
      * @access private
      */
     function _setFirstLastText()

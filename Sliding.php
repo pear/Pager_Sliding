@@ -48,7 +48,7 @@ class Pager_Sliding
     var $_altPage     = 'page';
     var $_prevImg     = '&laquo;';
     var $_nextImg     = '&raquo;';
-    var $_expanded     = false;
+    var $_expanded     = true;
     var $_separator   = '|';
     var $_spacesBeforeSeparator = 3;
     var $_spacesAfterSeparator  = 3;
@@ -63,8 +63,6 @@ class Pager_Sliding
     var $_spacesAfter     = '';
     var $_itemData        = null;
     var $_clearIfVoid     = true;
-
-
 
     // }}}
 
@@ -81,7 +79,6 @@ class Pager_Sliding
      * @var string
      */
     var $range = array();
-
 
     // {{{ Pager_Sliding()
 
@@ -344,16 +341,38 @@ class Pager_Sliding
      * Returns back/next/first/last and page links,
      * both as ordered and associative array.
      *
+     * @param integer $pageID Optional pageID. If specified, links
+     *                for that page are provided instead of current one.
      * @return array back/pages/next/first/last/all links
      */
-    function getLinks()
+    function getLinks($pageID = null)
     {
+        if ($pageID != null) {
+            $_sav = $this->_currentPage;
+            $this->_currentPage = $pageID;
+
+            $this->links = '';
+            if ($this->_totalPages > (2 * $this->_delta + 1)) {
+    		    $this->links .= $this->_printFirstPage();
+    	    }
+            $this->links .= $this->_getBackLink();
+    	    $this->links .= $this->_getPageLinks();
+    	    $this->links .= $this->_getNextLink();
+            if ($this->_totalPages > (2 * $this->_delta + 1)) {
+    		    $this->links .= $this->_printLastPage();
+    	    }
+        }
+
         $back  = str_replace('&nbsp;','', $this->_getBackLink());
         $next  = str_replace('&nbsp;','', $this->_getNextLink());
         $pages = $this->_getPageLinks();
         $first = $this->_printFirstPage();
         $last  = $this->_printLastPage();
         $all   = $this->links;
+
+        if ($pageID != null) {
+            $this->_currentPage = $_sav;
+        }
 
         return array(
                     $back,

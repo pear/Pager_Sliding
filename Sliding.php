@@ -18,7 +18,7 @@
 // $Id$
 
 define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
-define('CURRENT_PATHNAME', str_replace('\\','/',dirname($_SERVER['PHP_SELF'])));
+define('CURRENT_PATHNAME', str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
 
 /**
  * Pager_Sliding - Sliding Window Pager
@@ -155,19 +155,19 @@ class Pager_Sliding
     {
         $this->_setOptions($options);
         $this->_generatePageData();
-	    $this->_setFirstLastText();
+        $this->_setFirstLastText();
 
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
-    		$this->links .= $this->_printFirstPage();
-    	}
+            $this->links .= $this->_printFirstPage();
+        }
 
-    	$this->links .= $this->_getBackLink();
-    	$this->links .= $this->_getPageLinks();
-    	$this->links .= $this->_getNextLink();
+        $this->links .= $this->_getBackLink();
+        $this->links .= $this->_getPageLinks();
+        $this->links .= $this->_getNextLink();
 
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
-    		$this->links .= $this->_printLastPage();
-    	}
+            $this->links .= $this->_printLastPage();
+        }
     }
 
     // }}}
@@ -212,38 +212,33 @@ class Pager_Sliding
     // {{{ getOffsetByPageId()
 
     /**
-     * Returns offsets for given pageID. Eg, if you pass it pageID 5 and your
-     * delta is 2 it will return you 3 and 7. PageID of 6 would give you 4 and 8
-     *
-     * NB: The behaviour of this function could be misleading:
-     * I didn't know if leave it, but I did for compatibility with PEAR::Pager.
-     * It could raise some confusion when pageID is within delta positions from
-     * an extreme: in fact this method returns also the extremes, while
-     * $this->_getPageLinks leaves them out. This happens because I conceived
-     * Pager_Sliding this way: if pageID is NOT an extreme, show first and
-     * last page within brackets:   [1] <<  5 | _6_ | 7  >> [15]
-     * So when dealing with pageID within delta positions from an extreme,
-     * this method would return the extreme as well, while $this->_getPageLinks
-     * would return (for instance)   2 | _3_ | 4 | 5  even if pageID is 3 and
-     * delta is 2.
-     * In other words: consider this method deprecated and/or subject to changes
+     * Returns offsets for given pageID. Eg, if you pass pageID=5 and your
+     * delta is 2, it will return 3 and 7. A pageID of 6 would give you 4 and 8
+     * If the method is called without parameter, pageID is set to currentPage#.
      *
      * @param integer $pageid PageID to get offsets for
      * @return array  First and last offsets
      * @access public
-     * @deprecated
      */
     function getOffsetByPageId($pageid = null)
     {
-        $pageid = isset($pageid) ? $pageid : $this->_currentPage;
+        $pageid = isset($pageid) ? (int)$pageid : $this->_currentPage;
         if (!isset($this->_pageData)) {
             $this->_generatePageData();
         }
-        if (isset($this->_pageData[$pageid]) OR $this->_itemData === null) {
-            return array(   max($pageid - $this->_delta, 1),
-                            min($pageid + $this->_delta, $this->_totalPages));
+        if (isset($this->_pageData[$pageid]) || $this->_itemData === null) {
+            if($this->_expanded) {
+                $min_surplus = ($pageid <= $this->_delta) ? ($this->_delta - $pageid + 1) : 0;
+                $max_surplus = ($pageid >= ($this->_totalPages - $this->_delta)) ? 
+                                ($pageid - ($this->_totalPages - $this->_delta)) : 0;
+            } else {
+                $min_surplus = 0;
+                $max_surplus = 0;
+            }
+            return array(   max($pageid - $this->_delta - $max_surplus, 1),
+                            min($pageid + $this->_delta + $min_surplus, $this->_totalPages));
         } else {
-            return array(0,0);
+            return array(0, 0);
         }
     }
 
@@ -266,31 +261,31 @@ class Pager_Sliding
 
     /**
      * Returns next page ID. If current page is last page
-	* this function returns FALSE
-	*
-	* @return mixed Next pages' ID
+     * this function returns FALSE
+     *
+     * @return mixed Next pages' ID
      * @access public
      */
-	function getNextPageID()
-	{
-		return ($this->_currentPage == $this->_totalPages ?
-		                   false : $this->_currentPage + 1);
-	}
+    function getNextPageID()
+    {
+        return ($this->_currentPage == $this->_totalPages ?
+                           false : $this->_currentPage + 1);
+    }
 
     // }}}
     // {{{ getPreviousPageID()
 
     /**
      * Returns previous page ID. If current page is first page
-	* this function returns FALSE
-	*
-	* @return mixed Previous pages' ID
+     * this function returns FALSE
+     *
+     * @return mixed Previous pages' ID
      * @access public
      */
-	function getPreviousPageID()
-	{
-		return $this->isFirstPage() ? false : $this->getCurrentPageID() - 1;
-	}
+    function getPreviousPageID()
+    {
+        return $this->isFirstPage() ? false : $this->getCurrentPageID() - 1;
+    }
 
     // }}}
     // {{{ numItems()
@@ -382,18 +377,18 @@ class Pager_Sliding
 
             $this->links = '';
             if ($this->_totalPages > (2 * $this->_delta + 1)) {
-    		    $this->links .= $this->_printFirstPage();
-    	    }
+                $this->links .= $this->_printFirstPage();
+            }
             $this->links .= $this->_getBackLink();
-    	    $this->links .= $this->_getPageLinks();
-    	    $this->links .= $this->_getNextLink();
+            $this->links .= $this->_getPageLinks();
+            $this->links .= $this->_getNextLink();
             if ($this->_totalPages > (2 * $this->_delta + 1)) {
-    		    $this->links .= $this->_printLastPage();
-    	    }
+                $this->links .= $this->_printLastPage();
+            }
         }
 
-        $back  = str_replace('&nbsp;','', $this->_getBackLink());
-        $next  = str_replace('&nbsp;','', $this->_getNextLink());
+        $back  = str_replace('&nbsp;', '', $this->_getBackLink());
+        $next  = str_replace('&nbsp;', '', $this->_getNextLink());
         $pages = $this->_getPageLinks();
         $first = $this->_printFirstPage();
         $last  = $this->_printLastPage();
@@ -474,91 +469,84 @@ class Pager_Sliding
             if($this->_expanded) {
                 if(($this->_totalPages - $this->_delta) <= $this->_currentPage) {
                     $_expansion_before = $this->_currentPage - ($this->_totalPages - $this->_delta);
-                    if($this->_currentPage != $this->_totalPages) $_expansion_before++;
                 } else {
                     $_expansion_before = 0;
                 }
                 for($i = $this->_currentPage - $this->_delta - $_expansion_before; $_expansion_before; $_expansion_before--, $i++) {
-                    if(($i != $this->_currentPage + $this->_delta) && ($i != $this->_totalPages - 1)) {
-    			        $_print_separator_flag = true;
-    			    } else {
-        			    $_print_separator_flag = false;
-    			    }
+                    if(($i != $this->_currentPage + $this->_delta)){ // && ($i != $this->_totalPages - 1)) {
+                        $_print_separator_flag = true;
+                    } else {
+                        $_print_separator_flag = false;
+                    }
 
                     $this->range[$i] = false;
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
                                         $this->_altPage.' '.$i,
-    			                        $i)
-    				       . $this->_spacesBefore
-    				       . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
-    			}
+                                        $i)
+                           . $this->_spacesBefore
+                           . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
+                }
             }
 
 
             $_expansion_after = 0;
-    		for($i = $this->_currentPage - $this->_delta; ($i <= $this->_currentPage + $this->_delta) && ($i < $this->_totalPages); $i++) {
-    			if($i<2 && $i!=$this->_currentPage) {
-    			    $_expansion_after++;
-    			    continue;
+            for($i = $this->_currentPage - $this->_delta; ($i <= $this->_currentPage + $this->_delta) && ($i <= $this->_totalPages); $i++) {
+                if($i<1) {
+                    $_expansion_after++;
+                    continue;
                 }
 
-    			// check when to print separator
-    			if(($i != $this->_currentPage + $this->_delta) && ($i != $this->_totalPages - 1)) {
-    			    $_print_separator_flag = true;
-    			} else {
-    			    $_print_separator_flag = false;
-    			}
+                // check when to print separator
+                if(($i != $this->_currentPage + $this->_delta) && ($i != $this->_totalPages )) {
+                    $_print_separator_flag = true;
+                } else {
+                    $_print_separator_flag = false;
+                }
 
-    			if($i == $this->_currentPage) {
-    				$this->range[$i] = true;
+                if($i == $this->_currentPage) {
+                    $this->range[$i] = true;
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost
-    				             . $this->_spacesBefore
-    				             . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
-    			} else {
-    				$this->range[$i] = false;
+                                 . $this->_spacesBefore
+                                 . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
+                } else {
+                    $this->range[$i] = false;
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
                                         $this->_altPage.' '.$i,
-    			                        $i)
-    				        . $this->_spacesBefore
-                            . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
-    			}
-    		}
-
-    		if($this->_currentPage == $this->_totalPages) {
-    		    $this->range[$this->_currentPage] = true;
-                $links .= $this->_separator . $this->_spacesAfter
-    		           . $this->_curPageSpanPre . $this->_totalPages . $this->_curPageSpanPost;
+                                        $i)
+                                 . $this->_spacesBefore
+                                 . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
+                }
             }
 
             if($this->_expanded && $_expansion_after) {
                 $links .= $this->_separator . $this->_spacesAfter;
                 for($i = $this->_currentPage + $this->_delta +1; $_expansion_after; $_expansion_after--, $i++) {
                     if(($_expansion_after != 1)) {
-    			       $_print_separator_flag = true;
-    			    } else {
-        			    $_print_separator_flag = false;
-    			    }
+                       $_print_separator_flag = true;
+                    } else {
+                        $_print_separator_flag = false;
+                    }
 
                     $this->range[$i] = false;
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
                                         $this->_altPage.' '.$i,
-    			                        $i)
-    				       . $this->_spacesBefore
-    				       . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
-    			}
+                                        $i)
+                           . $this->_spacesBefore
+                           . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
+                }
             }
 
-    	} else {
-    	    //if $this->_totalPages <= (2*Delta+1) show them all
-    		for ($i=1; $i<=$this->_totalPages; $i++) {
+        } else {
+            //if $this->_totalPages <= (2*Delta+1) show them all
+            for ($i=1; $i<=$this->_totalPages; $i++) {
                 if($i != $this->_currentPage) {
-                	$this->range[$i] = false;
+                    $this->range[$i] = false;
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                     ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                     $this->_classString,
@@ -569,14 +557,14 @@ class Pager_Sliding
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
                 }
                 $links .= $this->_spacesBefore
-                       . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
-    		}
-    	}
+                             . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
+            }
+        }
 
         if($this->_clearIfVoid) {
-    	    //If there's only one page, don't display links
-    	    if($this->_totalPages < 2) $links = '';
-    	}
+            //If there's only one page, don't display links
+            if($this->_totalPages < 2) $links = '';
+        }
 
         return $links;
     }
@@ -596,12 +584,12 @@ class Pager_Sliding
     {
         if ($this->_currentPage > 1) {
             $back = sprintf('<a href="%s" %s title="%s">%s</a>',
-    			            ( $this->_append ? $this->_url.$this->getPreviousPageID() :
-    			                    $this->_url.sprintf($this->_fileName, $this->getPreviousPageID()) ),
-    			            $this->_classString,
-    			            $this->_altPrev,
-    			            $this->_prevImg)
-    			  . $this->_spacesBefore . $this->_spacesAfter;
+                            ( $this->_append ? $this->_url.$this->getPreviousPageID() :
+                                    $this->_url.sprintf($this->_fileName, $this->getPreviousPageID()) ),
+                            $this->_classString,
+                            $this->_altPrev,
+                            $this->_prevImg)
+                  . $this->_spacesBefore . $this->_spacesAfter;
         } else {
             $back = '';
         }
@@ -623,7 +611,7 @@ class Pager_Sliding
     {
         if ($this->_currentPage < $this->_totalPages) {
             $next = $this->_spacesAfter
-    			. sprintf('<a href="%s" %s title="%s">%s</a>',
+                . sprintf('<a href="%s" %s title="%s">%s</a>',
                             ( $this->_append ? $this->_url.$this->getNextPageID() :
                                     $this->_url.sprintf($this->_fileName, $this->getNextPageID()) ),
                             $this->_classString,
@@ -652,7 +640,7 @@ class Pager_Sliding
             return '';
         } else {
             return sprintf('<a href="%s" %s title="%s">%s%s%s</a>',
-    			            ( $this->_append ? $this->_url.'1' : $this->_url.sprintf($this->_fileName, 1) ),
+                            ( $this->_append ? $this->_url.'1' : $this->_url.sprintf($this->_fileName, 1) ),
                             $this->_classString,
                             $this->_altPage.' 1',
                             $this->_firstPagePre,
@@ -683,7 +671,7 @@ class Pager_Sliding
                             $this->_classString,
                             $this->_altPage.' '.$this->_totalPages,
                             $this->_lastPagePre,
- 			                $this->_lastPageText,
+                            $this->_lastPageText,
                             $this->_lastPagePost);
         }
     }
@@ -730,11 +718,11 @@ class Pager_Sliding
     {
         if ($this->_firstPageText == '') {
             $this->_firstPageText = '1';
-	    }
+        }
 
         if ($this->_lastPageText == '') {
-	        $this->_lastPageText = $this->_totalPages;
-    	}
+            $this->_lastPageText = $this->_totalPages;
+        }
     }
 
     // }}}

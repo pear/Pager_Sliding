@@ -17,19 +17,18 @@
  </maintainers>
 
  <release>
-  <version>1.5</version>
-  <date>2003-09-10</date>
+  <version>1.6</version>
+  <date>2003-12-XX</date>
   <state>stable</state>
   <notes>
 <![CDATA[
-NB: This is the last standalone release of Pager_Sliding.
-This package is now deprecated in favour of PEAR::Pager v.2.x.
+NB: This package is now deprecated in favour of PEAR::Pager v.2.x.
+Further versions of Pager_Sliding as a standalone package will be only released to fix eventual bugs.
 
-- added a pearErrorMode option to allow custom error handling
-- better handling of "curPageLinkClassName" default value
-- prevent URL manual modification
-- fixed getPerPageSelectBox() to store _perPage inside a session
-- other small fixes
+- added error code constant
+- fixed getPageIdByOffset for BC with Pager 1.x
+- new method getPageRangeByPageId() to replace the previous not-intentional behaviour of getPageIdByOffset() 
+- fixed isFirstPage() when totalItems == 0
 ]]>
   </notes>
 
@@ -48,6 +47,19 @@ This package is now deprecated in favour of PEAR::Pager v.2.x.
 
  <changelog>
 
+	  <release>
+	    <version>1.6</version>
+	    <date>2003-12-XX</date>
+	    <state>stable</state>
+	    <notes>
+<![CDATA[
+- added error code constant
+- fixed getPageIdByOffset for BC with Pager 1.x
+- new method getPageRangeByPageId() to replace the previous not-intentional behaviour of getPageIdByOffset() 
+- fixed isFirstPage() when totalItems == 0
+]]>
+	    </notes>
+	  </release>
 	  <release>
 	    <version>1.5</version>
 	    <date>2003-09-10</date>

@@ -979,7 +979,7 @@ class Pager_Sliding
         $querystring = array();
         $qs = array();
         if (!empty($_SERVER['QUERY_STRING'])) {
-            $qs = explode('&', $_SERVER['QUERY_STRING']);
+            $qs = explode('&', str_replace('&amp;', '&', $_SERVER['QUERY_STRING']));
             for ($i=0, $cnt=count($qs); $i<$cnt; $i++) {
                 list($name, $value) = explode('=', $qs[$i]);
                 if ($name != $this->_urlVar) {
@@ -993,7 +993,7 @@ class Pager_Sliding
             $querystring[] = $name . '=' . $value;
         }
 
-        return '?' . implode('&', $querystring) . (!empty($querystring) ? '&' : '') . $this->_urlVar .'=';
+        return '?' . implode('&amp;', $querystring) . (!empty($querystring) ? '&amp;' : '') . $this->_urlVar .'=';
     }
 
 

@@ -33,55 +33,222 @@ class Pager_Sliding
 
     // {{{ private class vars
 
+    /**
+     * @var integer number of items
+     * @access private
+     */
     var $_totalItems;
+
+    /**
+     * @var integer number of items per page
+     * @access private
+     */
     var $_perPage     = 10;
+
+    /**
+     * @var integer number of page links before and after the current one
+     * @access private
+     */
     var $_delta       = 2;
+
+    /**
+     * @var integer current page number
+     * @access private
+     */
     var $_currentPage = 1;
+
+    /**
+     * @var string CSS class for links
+     * @access private
+     */
     var $_linkClass   = '';
+
+    /**
+     * @var string wrapper for CSS class name
+     * @access private
+     */
     var $_classString = '';
+
+    /**
+     * @var string path name
+     * @access private
+     */
     var $_path        = CURRENT_PATHNAME;
+
+    /**
+     * @var string file name
+     * @access private
+     */
     var $_fileName    = CURRENT_FILENAME;
+
+    /**
+     * @var boolean you have to use FALSE with mod_rewrite
+     * @access private
+     */
     var $_append      = true;
+
+    /**
+     * @var string name of the querystring var for pageID
+     * @access private
+     */
     var $_urlVar      = 'pageID';
+
+    /**
+     * @var string alt text for "previous page"
+     * @access private
+     */
     var $_altPrev     = 'previous page';
+
+    /**
+     * @var string alt text for "next page"
+     * @access private
+     */
     var $_altNext     = 'next page';
+
+    /**
+     * @var string alt text for "page"
+     * @access private
+     */
     var $_altPage     = 'page';
+
+    /**
+     * @var string image/text to use as "prev" link
+     * @access private
+     */
     var $_prevImg     = '&laquo;';
+
+    /**
+     * @var string image/text to use as "next" link
+     * @access private
+     */
     var $_nextImg     = '&raquo;';
+
+    /**
+     * @var boolean TRUE => expanded mode
+     * @access private
+     */
     var $_expanded    = true;
+
+    /**
+     * @var string link separator
+     * @access private
+     */
     var $_separator   = '|';
+
+    /**
+     * @var integer number of spaces before separator
+     * @access private
+     */
     var $_spacesBeforeSeparator = 3;
+
+    /**
+     * @var integer number of spaces after separator
+     * @access private
+     */
     var $_spacesAfterSeparator  = 3;
+
+    /**
+     * @var string CSS class name for current page link
+     * @access private
+     */
     var $_curPageLinkClassName  = '';
+
+    /**
+     * @var string Text before current page link
+     * @access private
+     */
     var $_curPageSpanPre        = '';
+
+    /**
+     * @var string Text after current page link
+     * @access private
+     */
     var $_curPageSpanPost       = '';
+
+    /**
+     * @var string Text before first page link
+     * @access private
+     */
     var $_firstPagePre  = '[';
+
+    /**
+     * @var string Text to be used for first page link
+     * @access private
+     */
     var $_firstPageText = '';
+
+    /**
+     * @var string Text after first page link
+     * @access private
+     */
     var $_firstPagePost = ']';
+
+    /**
+     * @var string Text before last page link
+     * @access private
+     */
     var $_lastPagePre   = '[';
+
+    /**
+     * @var string Text to be used for last page link
+     * @access private
+     */
     var $_lastPageText  = '';
+
+    /**
+     * @var string Text after last page link
+     * @access private
+     */
     var $_lastPagePost  = ']';
+
+    /**
+     * @var string Will contain the HTML code for the spaces
+     * @access private
+     */
     var $_spacesBefore  = '';
+
+    /**
+     * @var string Will contain the HTML code for the spaces
+     * @access private
+     */
     var $_spacesAfter   = '';
+
+    /**
+     * @var array data to be paged
+     * @access private
+     */
     var $_itemData      = null;
+
+    /**
+     * @var boolean If TRUE and there's only one page, links aren't shown
+     * @access private
+     */
     var $_clearIfVoid   = true;
+
+    /**
+     * @var boolean Use session for storing the number of items per page
+     * @access private
+     */
     var $_useSessions   = false;
+
+    /**
+     * @var string name of the session var for number of items per page
+     * @access private
+     */
     var $_sessionVar    = 'setPerPage';
 
     // }}}
 
     /**
-     * String with a complete set of links
-     * @var string
+     * @var string Complete set of links
      * @access public
      */
     var $links = '';
 
     /**
-     * Array with a key => value pair representing
-     * page# => bool value (true if key==currentPageNumber).
-     * can be used for extreme customization.
-     * @var string
+     * @var array Array with a key => value pair representing
+     *            page# => bool value (true if key==currentPageNumber).
+     *            can be used for extreme customization.
      * @access public
      */
     var $range = array();

@@ -17,24 +17,19 @@
  </maintainers>
 
  <release>
-  <version>1.4</version>
-  <date>2003-05-20</date>
+  <version>1.5</version>
+  <date>2003-09-10</date>
   <state>stable</state>
   <notes>
 <![CDATA[
-- changed from this (supposing currentPage==2):
-    [1]  < 2 3 4 5 6 > [N]
-  to:
-    [1]  < 1 2 3 4 5 > [N]
-  i.e. now the link to the first/last page can be redundant,
-  but the pager acts in a more intuitive way
-- getOffsetByPageId() now works as expected, also in "expanded" mode
-- reduced calls to internal methods
-- Added two new variables:
-  * firstPageText
-  * lastPageText
-  They allow changing the default value "[1]" to "First", for instance.
-  Same for last number. If they are not set, they default to the number.
+NB: This is the last standalone release of Pager_Sliding.
+This package is now deprecated in favour of PEAR::Pager v.2.x.
+
+- added a pearErrorMode option to allow custom error handling
+- better handling of "curPageLinkClassName" default value
+- prevent URL manual modification
+- fixed getPerPageSelectBox() to store _perPage inside a session
+- other small fixes
 ]]>
   </notes>
 
@@ -52,6 +47,20 @@
 
 
  <changelog>
+
+	  <release>
+	    <version>1.5</version>
+	    <date>2003-09-10</date>
+	    <state>stable</state>
+	    <notes>
+<![CDATA[
+- added a pearErrorMode option to allow custom error handling
+- better handling of "curPageLinkClassName" default value
+- prevent URL manual modification
+- some fixes
+]]>
+	    </notes>
+	  </release>
 
 	  <release>
 	    <version>1.4</version>

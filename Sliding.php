@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | PEAR :: Pager_Sliding                                  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 1997-2003 The PHP Group                                |
+// | Copyright (c) 1997-2002 The PHP Group                                |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the PHP license,       |
 // | that is bundled with this package in the file LICENSE, and is        |
@@ -17,6 +17,9 @@
 //
 // $Id$
 
+define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
+define('CURRENT_PATHNAME', str_replace('\\','/',dirname($_SERVER['PHP_SELF'])));
+
 /**
  * Pager_Sliding - Sliding Window Pager
  *
@@ -25,9 +28,6 @@
  * @author   Lorenzo Alberton <l.alberton at quipo.it>
  * @version  $Id$
  */
-
-define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
-define('CURRENT_PATHNAME', str_replace('\\','/',dirname($_SERVER['PHP_SELF'])));
 class Pager_Sliding
 {
 
@@ -69,6 +69,7 @@ class Pager_Sliding
     /**
      * String with a complete set of links
      * @var string
+     * @access public
      */
     var $links = '';
 
@@ -77,6 +78,7 @@ class Pager_Sliding
      * page# => bool value (true if key==currentPageNumber).
      * can be used for extreme customization.
      * @var string
+     * @access public
      */
     var $range = array();
 
@@ -134,6 +136,7 @@ class Pager_Sliding
      *
      * @param mixed $options    An associative array of option names and
      *                          their values.
+     * @access public
      */
     function Pager_Sliding($options)
     {
@@ -161,7 +164,8 @@ class Pager_Sliding
      *
      * @param $pageID Desired page ID (optional)
      * @return array Page data
-    */
+     * @access public
+     */
     function getPageData($pageID = null)
     {
         if (isset($pageID)) {
@@ -186,6 +190,7 @@ class Pager_Sliding
      * "Overload" PEAR::Pager method. VOID. Not needed here...
      * @param $index Offset to get pageID for
      * @deprecated
+     * @access public
      */
     function getPageIdByOffset($index) { }
 
@@ -211,6 +216,7 @@ class Pager_Sliding
      *
      * @param pageID PageID to get offsets for
      * @return array  First and last offsets
+     * @access public
      * @deprecated
      */
     function getOffsetByPageId($pageid = null)
@@ -234,6 +240,7 @@ class Pager_Sliding
      * Returns ID of current page
      *
      * @return integer ID of current page
+     * @access public
      */
     function getCurrentPageID()
     {
@@ -248,6 +255,7 @@ class Pager_Sliding
 	 * this function returns FALSE
 	 *
 	 * @return mixed Next pages' ID
+     * @access public
      */
 	function getNextPageID()
 	{
@@ -263,6 +271,7 @@ class Pager_Sliding
 	 * this function returns FALSE
 	 *
 	 * @return mixed Previous pages' ID
+     * @access public
      */
 	function getPreviousPageID()
 	{
@@ -276,6 +285,7 @@ class Pager_Sliding
      * Returns number of items
      *
      * @return int Number of items
+     * @access public
      */
     function numItems()
     {
@@ -289,6 +299,7 @@ class Pager_Sliding
      * Returns number of pages
      *
      * @return int Number of pages
+     * @access public
      */
     function numPages()
     {
@@ -302,6 +313,7 @@ class Pager_Sliding
      * Returns whether current page is first page
      *
      * @return bool First page or not
+     * @access public
      */
     function isFirstPage()
     {
@@ -315,6 +327,7 @@ class Pager_Sliding
      * Returns whether current page is last page
      *
      * @return bool Last page or not
+     * @access public
      */
     function isLastPage()
     {
@@ -328,6 +341,7 @@ class Pager_Sliding
      * Returns whether last page is complete
      *
      * @return bool Last page complete or not
+     * @access public
      */
     function isLastPageComplete()
     {
@@ -344,6 +358,7 @@ class Pager_Sliding
      * @param integer $pageID Optional pageID. If specified, links
      *                for that page are provided instead of current one.
      * @return array back/pages/next/first/last/all links
+     * @access public
      */
     function getLinks($pageID = null)
     {
@@ -574,6 +589,8 @@ class Pager_Sliding
     /**
      * Print [1]
      *
+     * @return string String with link to 1st page,
+     *                or empty string if this is the 1st page.
      * @access private
      */
     function _printFirstPage()
@@ -598,6 +615,8 @@ class Pager_Sliding
     /**
      * Print [numPages()]
      *
+     * @return string String with link to last page,
+     *                or empty string if this is the 1st page.
      * @access private
      */
     function _printLastPage()
@@ -683,8 +702,8 @@ class Pager_Sliding
     /**
      * conditionally includes PEAR base class and raise an error
      *
-     * @param string $msg   Error message
-     * @param int $code     Error code
+     * @param string $msg Error message
+     * @param int $code   Error code
      * @access private
      */
     function raiseError($msg, $code)

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PEAR :: Pager_Sliding                                  |
+// | PEAR :: Pager_Sliding                                                |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2002 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -155,7 +155,7 @@ class Pager_Sliding
     {
         $this->_setOptions($options);
         $this->_generatePageData();
-	$this->_setFirstLastText();
+	    $this->_setFirstLastText();
 
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
     		$this->links .= $this->_printFirstPage();
@@ -241,7 +241,7 @@ class Pager_Sliding
         }
         if (isset($this->_pageData[$pageid]) OR $this->_itemData === null) {
             return array(   max($pageid - $this->_delta, 1),
-                            min($pageid + $this->_delta, $this->numPages()));
+                            min($pageid + $this->_delta, $this->_totalPages));
         } else {
             return array(0,0);
         }
@@ -273,8 +273,8 @@ class Pager_Sliding
      */
 	function getNextPageID()
 	{
-		return ($this->getCurrentPageID() == $this->numPages() ?
-		                   false : $this->getCurrentPageID() + 1);
+		return ($this->_currentPage == $this->_totalPages ?
+		                   false : $this->_currentPage + 1);
 	}
 
     // }}}
@@ -523,15 +523,15 @@ class Pager_Sliding
                                         $this->_classString,
                                         $this->_altPage.' '.$i,
     			                        $i)
-    				             . $this->_spacesBefore
-    				             . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
+    				        . $this->_spacesBefore
+                            . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
     			}
     		}
 
     		if($this->_currentPage == $this->_totalPages) {
     		    $this->range[$this->_currentPage] = true;
                 $links .= $this->_separator . $this->_spacesAfter
-    		                 . $this->_curPageSpanPre . $this->_totalPages . $this->_curPageSpanPost;
+    		           . $this->_curPageSpanPre . $this->_totalPages . $this->_curPageSpanPost;
             }
 
             if($this->_expanded && $_expansion_after) {
@@ -569,13 +569,13 @@ class Pager_Sliding
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
                 }
                 $links .= $this->_spacesBefore
-                             . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
+                       . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
     		}
     	}
 
         if($this->_clearIfVoid) {
     	    //If there's only one page, don't display links
-    	    if($this->numPages() < 2) $links = '';
+    	    if($this->_totalPages < 2) $links = '';
     	}
 
         return $links;
@@ -679,11 +679,11 @@ class Pager_Sliding
             return '';
         } else {
             return sprintf('<a href="%s" %s title="%s">%s%s%s</a>',
-                            ( $this->_append ? $this->_url.$this->numPages() : $this->_url.sprintf($this->_fileName, $this->numPages()) ),
+                            ( $this->_append ? $this->_url.$this->_totalPages : $this->_url.sprintf($this->_fileName, $this->_totalPages) ),
                             $this->_classString,
-                            $this->_altPage.' '.$this->numPages(),
+                            $this->_altPage.' '.$this->_totalPages,
                             $this->_lastPagePre,
- 			    $this->_lastPageText,
+ 			                $this->_lastPageText,
                             $this->_lastPagePost);
         }
     }
@@ -730,11 +730,11 @@ class Pager_Sliding
     {
         if ($this->_firstPageText == '') {
             $this->_firstPageText = '1';
-	}
+	    }
 
         if ($this->_lastPageText == '') {
-	    $this->_lastPageText = '${this->numPages()}';
-	}
+	        $this->_lastPageText = $this->_totalPages;
+    	}
     }
 
     // }}}

@@ -27,7 +27,12 @@
  */
 define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
 define('CURRENT_PATHNAME', str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
-
+/**
+ * Error codes
+ */
+if (!defined('ERROR_PAGER_SLIDING_INVALID')) {
+    define('ERROR_PAGER_SLIDING_INVALID', -1);
+}
 /**
  * Pager_Sliding - Generic data paging class  ("sliding window" style)
  *
@@ -406,27 +411,60 @@ class Pager_Sliding
      * @deprecated
      * @access public
      */
-    function getPageIdByOffset($index) { }
+    function getPageIdByOffset($index = null) { }
 
     // }}}
     // {{{ getOffsetByPageId()
 
     /**
-     * Returns offsets for given pageID. Eg, if you pass pageID=5 and your
-     * delta is 2, it will return 3 and 7. A pageID of 6 would give you 4 and 8
-     * If the method is called without parameter, pageID is set to currentPage#.
+     * Returns offsets for given pageID. Eg, if you
+     * pass it pageID one and your perPage limit is 10
+     * it will return you 1 and 10. PageID of 2 would
+     * give you 11 and 20.
      *
-     * @param integer $pageid PageID to get offsets for
+     * @param integer PageID to get offsets for
      * @return array  First and last offsets
      * @access public
      */
     function getOffsetByPageId($pageid = null)
     {
+        $pageid = isset($pageid) ? $pageid : $this->_currentPage;
+        if (!isset($this->_pageData)) {
+            $this->_generatePageData();
+        }
+
+        if (isset($this->_pageData[$pageid]) || is_null($this->_itemData)) {
+            return array(
+                        max(($this->_perPage * ($pageid - 1)) + 1, 1),
+                        min($this->_totalItems, $this->_perPage * $pageid)
+                   );
+        } else {
+            return array(0, 0);
+        }
+    }
+
+    // }}}
+    // {{{ getPageRangeByPageId()
+
+    /**
+     * Given a PageId, it returns the limits of the range of pages displayed.
+     * While getOffsetByPageId() returns the offset of the data within the
+     * current page, this method returns the offsets of the page numbers interval.
+     * E.g., if you have pageId=5 and delta=2, it will return (3, 7).
+     * PageID of 9 would give you (4, 8).
+     * If the method is called without parameter, pageID is set to currentPage#.
+     *
+     * @param integer PageID to get offsets for
+     * @return array  First and last offsets
+     * @access public
+     */
+    function getPageRangeByPageId($pageid = null)
+    {
         $pageid = isset($pageid) ? (int)$pageid : $this->_currentPage;
         if (!isset($this->_pageData)) {
             $this->_generatePageData();
         }
-        if (isset($this->_pageData[$pageid]) || $this->_itemData === null) {
+        if (isset($this->_pageData[$pageid]) || is_null($this->_itemData)) {
             if ($this->_expanded) {
                 $min_surplus = ($pageid <= $this->_delta) ? ($this->_delta - $pageid + 1) : 0;
                 $max_surplus = ($pageid >= ($this->_totalPages - $this->_delta)) ?
@@ -526,7 +564,7 @@ class Pager_Sliding
      */
     function isFirstPage()
     {
-        return ($this->_currentPage == 1);
+        return ($this->_currentPage < 2);
     }
 
     // }}}
@@ -571,7 +609,7 @@ class Pager_Sliding
      */
     function getLinks($pageID = null)
     {
-        if ($pageID != null) {
+        if (!is_null($pageID)) {
             $_sav = $this->_currentPage;
             $this->_currentPage = $pageID;
 
@@ -885,7 +923,7 @@ class Pager_Sliding
     function _generatePageData()
     {
         // Been supplied an array of data?
-        if ($this->_itemData !== null) {
+        if (!is_null($this->_itemData)) {
             $this->_totalItems = count($this->_itemData);
         }
         $this->_totalPages = ceil((float)$this->_totalItems / (float)$this->_perPage);
@@ -972,7 +1010,7 @@ class Pager_Sliding
     function raiseError($msg, $code)
     {
         include_once 'PEAR.php';
-        if(empty($this->_pearErrorMode)) {
+        if (empty($this->_pearErrorMode)) {
             $this->_pearErrorMode = PEAR_ERROR_RETURN;
         }
         PEAR::raiseError($msg, $code, $this->_pearErrorMode);
@@ -1040,7 +1078,7 @@ class Pager_Sliding
             if (!strstr($this->_fileName,'%d')) {
                 $msg = '<b>Pager_Sliding Error:</b>'
                       .' "fileName" format not valid. Use "%d" as placeholder.';
-                return $this->raiseError($msg, -1);
+                return $this->raiseError($msg, ERROR_PAGER_SLIDING_INVALID);
             }
         }
 

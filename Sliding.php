@@ -397,7 +397,7 @@ class Pager_Sliding
             $this->_generatePageData();
         }
         if (isset($this->_pageData[$pageid]) || $this->_itemData === null) {
-            if($this->_expanded) {
+            if ($this->_expanded) {
                 $min_surplus = ($pageid <= $this->_delta) ? ($this->_delta - $pageid + 1) : 0;
                 $max_surplus = ($pageid >= ($this->_totalPages - $this->_delta)) ?
                                 ($pageid - ($this->_totalPages - $this->_delta)) : 0;
@@ -605,16 +605,16 @@ class Pager_Sliding
         $start = (int)$start;
         $end   = (int)$end;
         $step  = (int)$step;
-        if(!empty($_SESSION["$this->_sessionVar"])) {
+        if (!empty($_SESSION["$this->_sessionVar"])) {
             $selected = (int)$_SESSION["$this->_sessionVar"];
         } else {
             $selected = $start;
         }
 
         $tmp = '<select name="'.$this->_sessionVar.'">';
-        for($i=$start; $i<=$end; $i+=$step) {
+        for ($i=$start; $i<=$end; $i+=$step) {
             $tmp .= '<option value="'.$i.'"';
-            if($i == $selected) {
+            if ($i == $selected) {
                 $tmp .= ' selected="selected"';
             }
             $tmp .= '>'.$i.'</option>';
@@ -636,14 +636,14 @@ class Pager_Sliding
     {
         $links = '';
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
-            if($this->_expanded) {
-                if(($this->_totalPages - $this->_delta) <= $this->_currentPage) {
+            if ($this->_expanded) {
+                if (($this->_totalPages - $this->_delta) <= $this->_currentPage) {
                     $_expansion_before = $this->_currentPage - ($this->_totalPages - $this->_delta);
                 } else {
                     $_expansion_before = 0;
                 }
-                for($i = $this->_currentPage - $this->_delta - $_expansion_before; $_expansion_before; $_expansion_before--, $i++) {
-                    if(($i != $this->_currentPage + $this->_delta)){ // && ($i != $this->_totalPages - 1)) {
+                for ($i = $this->_currentPage - $this->_delta - $_expansion_before; $_expansion_before; $_expansion_before--, $i++) {
+                    if (($i != $this->_currentPage + $this->_delta)){ // && ($i != $this->_totalPages - 1)) {
                         $_print_separator_flag = true;
                     } else {
                         $_print_separator_flag = false;
@@ -662,20 +662,20 @@ class Pager_Sliding
 
 
             $_expansion_after = 0;
-            for($i = $this->_currentPage - $this->_delta; ($i <= $this->_currentPage + $this->_delta) && ($i <= $this->_totalPages); $i++) {
-                if($i<1) {
+            for ($i = $this->_currentPage - $this->_delta; ($i <= $this->_currentPage + $this->_delta) && ($i <= $this->_totalPages); $i++) {
+                if ($i<1) {
                     $_expansion_after++;
                     continue;
                 }
 
                 // check when to print separator
-                if(($i != $this->_currentPage + $this->_delta) && ($i != $this->_totalPages )) {
+                if (($i != $this->_currentPage + $this->_delta) && ($i != $this->_totalPages )) {
                     $_print_separator_flag = true;
                 } else {
                     $_print_separator_flag = false;
                 }
 
-                if($i == $this->_currentPage) {
+                if ($i == $this->_currentPage) {
                     $this->range[$i] = true;
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost
                                  . $this->_spacesBefore
@@ -692,10 +692,10 @@ class Pager_Sliding
                 }
             }
 
-            if($this->_expanded && $_expansion_after) {
+            if ($this->_expanded && $_expansion_after) {
                 $links .= $this->_separator . $this->_spacesAfter;
-                for($i = $this->_currentPage + $this->_delta +1; $_expansion_after; $_expansion_after--, $i++) {
-                    if(($_expansion_after != 1)) {
+                for ($i = $this->_currentPage + $this->_delta +1; $_expansion_after; $_expansion_after--, $i++) {
+                    if (($_expansion_after != 1)) {
                        $_print_separator_flag = true;
                     } else {
                         $_print_separator_flag = false;
@@ -715,7 +715,7 @@ class Pager_Sliding
         } else {
             //if $this->_totalPages <= (2*Delta+1) show them all
             for ($i=1; $i<=$this->_totalPages; $i++) {
-                if($i != $this->_currentPage) {
+                if ($i != $this->_currentPage) {
                     $this->range[$i] = false;
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                     ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
@@ -731,9 +731,9 @@ class Pager_Sliding
             }
         }
 
-        if($this->_clearIfVoid) {
+        if ($this->_clearIfVoid) {
             //If there's only one page, don't display links
-            if($this->_totalPages < 2) $links = '';
+            if ($this->_totalPages < 2) $links = '';
         }
 
         return $links;
@@ -990,8 +990,8 @@ class Pager_Sliding
             'sessionVar'
         );
 
-        foreach($options as $key => $value) {
-            if(in_array($key, $allowed_options) && ($value !== null)) {
+        foreach ($options as $key => $value) {
+            if (in_array($key, $allowed_options) && ($value !== null)) {
                 $this->{'_' . $key} = $value;
             }
         }
@@ -999,11 +999,11 @@ class Pager_Sliding
         $this->_fileName = ltrim($this->_fileName, '/');  //strip leading slash
         $this->_path     = rtrim($this->_path, '/');      //strip trailing slash
 
-        if($this->_append) {
+        if ($this->_append) {
             $this->_fileName = CURRENT_FILENAME; //avoid easy-verified user error;
             $this->_url = $this->_path.'/'.$this->_fileName.$this->_getLinksUrl();
         } else {
-            if(!strstr($this->_fileName,'%d')) {
+            if (!strstr($this->_fileName,'%d')) {
                 $msg = '<b>Pager_Sliding Error:</b>'
                       .' "fileName" format not valid. Use "%d" as placeholder.';
                 return $this->raiseError($msg, -1);
@@ -1011,13 +1011,13 @@ class Pager_Sliding
             $this->_url = $this->_path.'/';
         }
 
-        if(strlen($this->_linkClass)) {
+        if (strlen($this->_linkClass)) {
             $this->_classString = 'class="'.$this->_linkClass.'"';
         } else {
             $this->_classString = '';
         }
 
-        if(strlen($this->_curPageLinkClassName)) {
+        if (strlen($this->_curPageLinkClassName)) {
             $this->_curPageSpanPre  = '<span class="'.$this->_curPageLinkClassName.'">';
             $this->_curPageSpanPost = '</span>';
         } else {
@@ -1025,26 +1025,26 @@ class Pager_Sliding
             $this->_curPageSpanPost = '</u></b>';
         }
 
-        if($this->_perPage < 1) {   //avoid easy-verified user error
+        if ($this->_perPage < 1) {   //avoid easy-verified user error
             $this->_perPage = 1;
         }
 
-        if(!empty($_REQUEST["$this->_sessionVar"])) {
+        if (!empty($_REQUEST["$this->_sessionVar"])) {
             $this->_perPage = max(1, (int)$_REQUEST["$this->_sessionVar"]);
-            if($this->_useSessions) {
+            if ($this->_useSessions) {
                 $_SESSION["$this->_sessionVar"] = $this->_perPage;
             }
         }
 
-        if(!empty($_SESSION["$this->_sessionVar"])) {
+        if (!empty($_SESSION["$this->_sessionVar"])) {
              $this->_perPage = $_SESSION["$this->_sessionVar"];
         }
 
-        for($i=0; $i<$this->_spacesBeforeSeparator; $i++) {
+        for ($i=0; $i<$this->_spacesBeforeSeparator; $i++) {
             $this->_spacesBefore .= '&nbsp;';
         }
 
-        for($i=0; $i<$this->_spacesAfterSeparator; $i++) {
+        for ($i=0; $i<$this->_spacesAfterSeparator; $i++) {
             $this->_spacesAfter .= '&nbsp;';
         }
 

@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------+
 // | PEAR :: Pager_Sliding                                  |
 // +----------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PHP Group                                |
+// | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
 // | This source file is subject to version 2.0 of the PHP license,       |
 // | that is bundled with this package in the file LICENSE, and is        |
@@ -678,7 +678,7 @@ class Pager_Sliding
 
 
     // }}}
-    // {{{ _setOptions()
+    // {{{ raiseError()
 
     /**
      * conditionally includes PEAR base class and raise an error

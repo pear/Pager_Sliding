@@ -188,7 +188,7 @@ class Pager_Sliding
 
     /**
      * "Overload" PEAR::Pager method. VOID. Not needed here...
-     * @param $index Offset to get pageID for
+     * @param integer $index Offset to get pageID for
      * @deprecated
      * @access public
      */
@@ -214,7 +214,7 @@ class Pager_Sliding
      * delta is 2.
      * In other words: consider this method deprecated and/or subject to changes
      *
-     * @param pageID PageID to get offsets for
+     * @param integer $pageid PageID to get offsets for
      * @return array  First and last offsets
      * @access public
      * @deprecated
@@ -534,8 +534,8 @@ class Pager_Sliding
     /**
      * Returns back link
      *
-     * @param $url  URL to use in the link
-     * @param $link HTML to use as the link
+     * @param  string $url  URL to use in the link
+     * @param  string $link HTML to use as the link
      * @return string The link
      * @access private
      */
@@ -561,8 +561,8 @@ class Pager_Sliding
     /**
      * Returns next link
      *
-     * @param $url  URL to use in the link
-     * @param $link HTML to use as the link
+     * @param  string $url  URL to use in the link
+     * @param  string $link HTML to use as the link
      * @return string The link
      * @access private
      */
@@ -702,8 +702,8 @@ class Pager_Sliding
     /**
      * conditionally includes PEAR base class and raise an error
      *
-     * @param string $msg Error message
-     * @param int $code   Error code
+     * @param string $msg  Error message
+     * @param int    $code Error code
      * @access private
      */
     function raiseError($msg, $code)

@@ -157,6 +157,9 @@ class Pager_Sliding
         $this->_generatePageData();
         $this->_setFirstLastText();
 
+        //prevent URL manual modification
+        $this->_currentPage = min($this->_currentPage, $this->_totalPages);
+
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
             $this->links .= $this->_printFirstPage();
         }
@@ -229,7 +232,7 @@ class Pager_Sliding
         if (isset($this->_pageData[$pageid]) || $this->_itemData === null) {
             if($this->_expanded) {
                 $min_surplus = ($pageid <= $this->_delta) ? ($this->_delta - $pageid + 1) : 0;
-                $max_surplus = ($pageid >= ($this->_totalPages - $this->_delta)) ? 
+                $max_surplus = ($pageid >= ($this->_totalPages - $this->_delta)) ?
                                 ($pageid - ($this->_totalPages - $this->_delta)) : 0;
             } else {
                 $min_surplus = 0;
@@ -711,7 +714,7 @@ class Pager_Sliding
      * sets the private _firstPageText, _lastPageText variables
      * based on whether they were set in the options
      *
-     * @return 
+     * @return
      * @access private
      */
     function _setFirstLastText()

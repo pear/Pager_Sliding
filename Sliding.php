@@ -1086,7 +1086,11 @@ class Pager_Sliding
             $this->_spacesAfter .= '&nbsp;';
         }
 
-        $this->_currentPage = max((int)@$_GET[$this->_urlVar], 1);
+        if (isset($_GET[$this->_urlVar])) {
+            $this->_currentPage = max((int)@$_GET[$this->_urlVar], 1);
+        } else {
+            $this->_currentPage = 1;
+        }
     }
 
     // }}}

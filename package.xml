@@ -26,10 +26,10 @@
   <filelist>
    <dir name="/" baseinstalldir="Pager">
     <file role="php" name="Sliding.php" />
-    <file role="doc" name="examples/Sliding_example1.php">
-    <file role="doc" name="examples/Sliding_example2.php">
-    <file role="doc" name="examples/Sliding_example3.php">
-    <file role="doc" name="examples/Sliding_example4.php">
+    <file role="doc" name="examples/Sliding_example1.php" />
+    <file role="doc" name="examples/Sliding_example2.php" />
+    <file role="doc" name="examples/Sliding_example3.php" />
+    <file role="doc" name="examples/Sliding_example4.php" />
    </dir>
   </filelist>
  </release>

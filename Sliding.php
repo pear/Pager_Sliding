@@ -247,6 +247,12 @@ class Pager_Sliding
     var $_useSessions   = false;
 
     /**
+     * @var boolean Close the session when finished reading/writing data
+     * @access private
+     */
+    var $_closeSession  = false;
+
+    /**
      * @var string name of the session var for number of items per page
      * @access private
      */
@@ -328,6 +334,7 @@ class Pager_Sliding
      *  - itemData   (array):  array of items to page.
      *  - useSessions (bool):  if true, number of items to display per page is
      *                         stored in the $_SESSION[$_sessionVar] var.
+     *  - closeSession (bool): if true, the session is closed just after R/W.
      *  - sessionVar (string): name of the session var for perPage value.
      *                         A value != from default can be useful when
      *                         using more than one Pager istance in the page.
@@ -628,8 +635,8 @@ class Pager_Sliding
         $start = (int)$start;
         $end   = (int)$end;
         $step  = (int)$step;
-        if (!empty($_SESSION["$this->_sessionVar"])) {
-            $selected = (int)$_SESSION["$this->_sessionVar"];
+        if (!empty($_SESSION[$this->_sessionVar])) {
+            $selected = (int)$_SESSION[$this->_sessionVar];
         } else {
             $selected = $start;
         }
@@ -930,8 +937,6 @@ class Pager_Sliding
      */
     function _getLinksUrl()
     {
-        global $_SERVER;
-
         // Sort out query string to prevent messy urls
         $querystring = array();
         $qs = array();
@@ -985,8 +990,6 @@ class Pager_Sliding
      */
     function _setOptions($options)
     {
-        global $_GET, $_REQUEST, $_SESSION;
-
         $allowed_options = array(
             'totalItems',
             'perPage',
@@ -1015,6 +1018,7 @@ class Pager_Sliding
             'itemData',
             'clearIfVoid',
             'useSessions',
+            'closeSession',
             'sessionVar',
             'pearErrorMode'
         );
@@ -1055,15 +1059,23 @@ class Pager_Sliding
             $this->_perPage = 1;
         }
 
-        if (!empty($_REQUEST["$this->_sessionVar"])) {
-            $this->_perPage = max(1, (int)$_REQUEST["$this->_sessionVar"]);
+        if ($this->_useSessions && !isset($_SESSION)) {
+            session_start();
+        }
+        if (!empty($_REQUEST[$this->_sessionVar])) {
+            $this->_perPage = max(1, (int)$_REQUEST[$this->_sessionVar]);
+
             if ($this->_useSessions) {
-                $_SESSION["$this->_sessionVar"] = $this->_perPage;
+                $_SESSION[$this->_sessionVar] = $this->_perPage;
             }
         }
 
-        if (!empty($_SESSION["$this->_sessionVar"])) {
-             $this->_perPage = $_SESSION["$this->_sessionVar"];
+        if (!empty($_SESSION[$this->_sessionVar])) {
+             $this->_perPage = $_SESSION[$this->_sessionVar];
+        }
+
+        if ($this->_closeSession) {
+            session_write_close();
         }
 
         for ($i=0; $i<$this->_spacesBeforeSeparator; $i++) {

@@ -16,7 +16,15 @@
 // +----------------------------------------------------------------------+
 //
 // $Id$
-
+/**
+ * File Sliding.php
+ *
+ * @package Pager_Sliding
+ */
+/**
+ * Two constants used to guess the path- and file-name of the page
+ * when the user doesn't set any pther value
+ */
 define('CURRENT_FILENAME', basename($_SERVER['PHP_SELF']));
 define('CURRENT_PATHNAME', str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
 
@@ -25,8 +33,9 @@ define('CURRENT_PATHNAME', str_replace('\\', '/', dirname($_SERVER['PHP_SELF']))
  *
  * Usage examples can be found in the doc provided
  *
- * @author   Lorenzo Alberton <l.alberton at quipo.it>
- * @version  $Id$
+ * @author  Lorenzo Alberton <l.alberton at quipo.it>
+ * @version $Id$
+ * @package Pager_Sliding
  */
 class Pager_Sliding
 {
@@ -94,6 +103,12 @@ class Pager_Sliding
     var $_urlVar      = 'pageID';
 
     /**
+     * @var string name of the url without the pageID number
+     * @access private
+     */
+    var $_url         = '';
+
+    /**
      * @var string alt text for "previous page"
      * @access private
      */
@@ -157,13 +172,13 @@ class Pager_Sliding
      * @var string Text before current page link
      * @access private
      */
-    var $_curPageSpanPre        = '';
+    var $_curPageSpanPre        = '<b><u>';
 
     /**
      * @var string Text after current page link
      * @access private
      */
-    var $_curPageSpanPost       = '';
+    var $_curPageSpanPost       = '</u></b>';
 
     /**
      * @var string Text before first page link
@@ -237,6 +252,14 @@ class Pager_Sliding
      */
     var $_sessionVar    = 'setPerPage';
 
+    /**
+     * Pear error mode (when raiseError is called)
+     * (see PEAR doc)
+     *
+     * @var int $_pearErrorMode
+     */
+    var $_pearErrorMode = null;
+
     // }}}
 
     /**
@@ -308,6 +331,9 @@ class Pager_Sliding
      *  - sessionVar (string): name of the session var for perPage value.
      *                         A value != from default can be useful when
      *                         using more than one Pager istance in the page.
+     *  - pearErrorMode (constant):
+     *                         PEAR_ERROR mode for raiseError().
+     *                         Default is PEAR_ERROR_RETURN.
      * -------------------------------------------------------------------------
      * REQUIRED options are:
      *  - fileName IF append==false (default is true)
@@ -323,9 +349,6 @@ class Pager_Sliding
         $this->_setOptions($options);
         $this->_generatePageData();
         $this->_setFirstLastText();
-
-        //prevent URL manual modification
-        $this->_currentPage = min($this->_currentPage, $this->_totalPages);
 
         if ($this->_totalPages > (2 * $this->_delta + 1)) {
             $this->links .= $this->_printFirstPage();
@@ -727,7 +750,7 @@ class Pager_Sliding
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
                 }
                 $links .= $this->_spacesBefore
-                             . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
+                       . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
             }
         }
 
@@ -772,8 +795,6 @@ class Pager_Sliding
     /**
      * Returns next link
      *
-     * @param  string $url  URL to use in the link
-     * @param  string $link HTML to use as the link
      * @return string The link
      * @access private
      */
@@ -856,6 +877,7 @@ class Pager_Sliding
      */
     function _generatePageData()
     {
+        // Been supplied an array of data?
         if ($this->_itemData !== null) {
             $this->_totalItems = count($this->_itemData);
         }
@@ -871,6 +893,9 @@ class Pager_Sliding
         } else {
             $this->_pageData = array();
         }
+
+        //prevent URL manual modification
+        $this->_currentPage = min($this->_currentPage, $this->_totalPages);
     }
 
 
@@ -941,7 +966,10 @@ class Pager_Sliding
      */
     function raiseError($msg, $code)
     {
-        include_once('PEAR.php');
+        include_once 'PEAR.php';
+        if(empty($this->_pearErrorMode)) {
+            $this->_pearErrorMode = PEAR_ERROR_RETURN;
+        }
         PEAR::raiseError($msg, $code, $this->_pearErrorMode);
     }
 
@@ -987,7 +1015,8 @@ class Pager_Sliding
             'itemData',
             'clearIfVoid',
             'useSessions',
-            'sessionVar'
+            'sessionVar',
+            'pearErrorMode'
         );
 
         foreach ($options as $key => $value) {
@@ -1003,12 +1032,12 @@ class Pager_Sliding
             $this->_fileName = CURRENT_FILENAME; //avoid easy-verified user error;
             $this->_url = $this->_path.'/'.$this->_fileName.$this->_getLinksUrl();
         } else {
+            $this->_url = $this->_path.'/';
             if (!strstr($this->_fileName,'%d')) {
                 $msg = '<b>Pager_Sliding Error:</b>'
                       .' "fileName" format not valid. Use "%d" as placeholder.';
                 return $this->raiseError($msg, -1);
             }
-            $this->_url = $this->_path.'/';
         }
 
         if (strlen($this->_linkClass)) {
@@ -1020,9 +1049,6 @@ class Pager_Sliding
         if (strlen($this->_curPageLinkClassName)) {
             $this->_curPageSpanPre  = '<span class="'.$this->_curPageLinkClassName.'">';
             $this->_curPageSpanPost = '</span>';
-        } else {
-            $this->_curPageSpanPre  = '<b><u>';
-            $this->_curPageSpanPost = '</u></b>';
         }
 
         if ($this->_perPage < 1) {   //avoid easy-verified user error

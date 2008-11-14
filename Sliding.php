@@ -1,26 +1,29 @@
 <?php
-// +----------------------------------------------------------------------+
-// | PEAR :: Pager_Sliding                                                |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 1997-2002 The PHP Group                                |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the PHP license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available at through the world-wide-web at                           |
-// | http://www.php.net/license/2_02.txt.                                 |
-// | If you did not receive a copy of the PHP license and are unable to   |
-// | obtain it through the world-wide-web, please send a note to          |
-// | license@php.net so we can mail you a copy immediately.               |
-// +----------------------------------------------------------------------+
-// | Author: Lorenzo Alberton <l.alberton at quipo.it>                    |
-// +----------------------------------------------------------------------+
-//
-// $Id$
 /**
- * File Sliding.php
+ * PEAR :: Pager_Sliding
  *
- * @package Pager_Sliding
+ * PHP version 4
+ *
+ * Copyright (c) 1997-2002 The PHP Group
+ *
+ * This source file is subject to version 2.0 of the PHP license,
+ * that is bundled with this package in the file LICENSE, and is
+ * available at through the world-wide-web at
+ * http://www.php.net/license/2_02.txt.
+ * If you did not receive a copy of the PHP license and are unable to
+ * obtain it through the world-wide-web, please send a note to
+ * license@php.net so we can mail you a copy immediately.
+ *
+ * Author: Lorenzo Alberton <l.alberton at quipo.it>
+ *
+ * @category Pager
+ * @package  Pager_Sliding
+ * @author   Lorenzo Alberton <l.alberton@quipo.it>
+ * @license  PHP 2.02 http://www.php.net/license/2_02.txt
+ * @version  CVS: $Id$
+ * @link     http://pear.php.net/package/Pager_Sliding
  */
+
 /**
  * Two constants used to guess the path- and file-name of the page
  * when the user doesn't set any pther value
@@ -38,14 +41,14 @@ if (!defined('ERROR_PAGER_SLIDING_INVALID')) {
  *
  * Usage examples can be found in the doc provided
  *
- * @author  Lorenzo Alberton <l.alberton at quipo.it>
- * @version $Id$
- * @package Pager_Sliding
- */
+ * @category Pager
+ * @package  Pager_Sliding
+ * @author   Lorenzo Alberton <l.alberton@quipo.it>
+ * @license  PHP 2.02 http://www.php.net/license/2_02.txt
+ * @link     http://pear.php.net/package/Pager_Sliding
 class Pager_Sliding
 {
 
-    // {{{ private class vars
 
     /**
      * @var integer number of items
@@ -57,13 +60,13 @@ class Pager_Sliding
      * @var integer number of items per page
      * @access private
      */
-    var $_perPage     = 10;
+    var $_perPage = 10;
 
     /**
      * @var integer number of page links before and after the current one
      * @access private
      */
-    var $_delta       = 2;
+    var $_delta = 2;
 
     /**
      * @var integer current page number
@@ -75,7 +78,7 @@ class Pager_Sliding
      * @var string CSS class for links
      * @access private
      */
-    var $_linkClass   = '';
+    var $_linkClass = '';
 
     /**
      * @var string wrapper for CSS class name
@@ -87,73 +90,73 @@ class Pager_Sliding
      * @var string path name
      * @access private
      */
-    var $_path        = CURRENT_PATHNAME;
+    var $_path = CURRENT_PATHNAME;
 
     /**
      * @var string file name
      * @access private
      */
-    var $_fileName    = CURRENT_FILENAME;
+    var $_fileName = CURRENT_FILENAME;
 
     /**
      * @var boolean you have to use FALSE with mod_rewrite
      * @access private
      */
-    var $_append      = true;
+    var $_append = true;
 
     /**
      * @var string name of the querystring var for pageID
      * @access private
      */
-    var $_urlVar      = 'pageID';
+    var $_urlVar = 'pageID';
 
     /**
      * @var string name of the url without the pageID number
      * @access private
      */
-    var $_url         = '';
+    var $_url = '';
 
     /**
      * @var string alt text for "previous page"
      * @access private
      */
-    var $_altPrev     = 'previous page';
+    var $_altPrev = 'previous page';
 
     /**
      * @var string alt text for "next page"
      * @access private
      */
-    var $_altNext     = 'next page';
+    var $_altNext = 'next page';
 
     /**
      * @var string alt text for "page"
      * @access private
      */
-    var $_altPage     = 'page';
+    var $_altPage = 'page';
 
     /**
      * @var string image/text to use as "prev" link
      * @access private
      */
-    var $_prevImg     = '&laquo;';
+    var $_prevImg = '&laquo;';
 
     /**
      * @var string image/text to use as "next" link
      * @access private
      */
-    var $_nextImg     = '&raquo;';
+    var $_nextImg = '&raquo;';
 
     /**
      * @var boolean TRUE => expanded mode
      * @access private
      */
-    var $_expanded    = true;
+    var $_expanded = true;
 
     /**
      * @var string link separator
      * @access private
      */
-    var $_separator   = '|';
+    var $_separator = '|';
 
     /**
      * @var integer number of spaces before separator
@@ -165,31 +168,31 @@ class Pager_Sliding
      * @var integer number of spaces after separator
      * @access private
      */
-    var $_spacesAfterSeparator  = 3;
+    var $_spacesAfterSeparator = 3;
 
     /**
      * @var string CSS class name for current page link
      * @access private
      */
-    var $_curPageLinkClassName  = '';
+    var $_curPageLinkClassName = '';
 
     /**
      * @var string Text before current page link
      * @access private
      */
-    var $_curPageSpanPre        = '<b><u>';
+    var $_curPageSpanPre = '<b><u>';
 
     /**
      * @var string Text after current page link
      * @access private
      */
-    var $_curPageSpanPost       = '</u></b>';
+    var $_curPageSpanPost = '</u></b>';
 
     /**
      * @var string Text before first page link
      * @access private
      */
-    var $_firstPagePre  = '[';
+    var $_firstPagePre = '[';
 
     /**
      * @var string Text to be used for first page link
@@ -207,61 +210,61 @@ class Pager_Sliding
      * @var string Text before last page link
      * @access private
      */
-    var $_lastPagePre   = '[';
+    var $_lastPagePre = '[';
 
     /**
      * @var string Text to be used for last page link
      * @access private
      */
-    var $_lastPageText  = '';
+    var $_lastPageText = '';
 
     /**
      * @var string Text after last page link
      * @access private
      */
-    var $_lastPagePost  = ']';
+    var $_lastPagePost = ']';
 
     /**
      * @var string Will contain the HTML code for the spaces
      * @access private
      */
-    var $_spacesBefore  = '';
+    var $_spacesBefore = '';
 
     /**
      * @var string Will contain the HTML code for the spaces
      * @access private
      */
-    var $_spacesAfter   = '';
+    var $_spacesAfter = '';
 
     /**
      * @var array data to be paged
      * @access private
      */
-    var $_itemData      = null;
+    var $_itemData = null;
 
     /**
      * @var boolean If TRUE and there's only one page, links aren't shown
      * @access private
      */
-    var $_clearIfVoid   = true;
+    var $_clearIfVoid = true;
 
     /**
      * @var boolean Use session for storing the number of items per page
      * @access private
      */
-    var $_useSessions   = false;
+    var $_useSessions = false;
 
     /**
      * @var boolean Close the session when finished reading/writing data
      * @access private
      */
-    var $_closeSession  = false;
+    var $_closeSession = false;
 
     /**
      * @var string name of the session var for number of items per page
      * @access private
      */
-    var $_sessionVar    = 'setPerPage';
+    var $_sessionVar = 'setPerPage';
 
     /**
      * Pear error mode (when raiseError is called)
@@ -271,7 +274,6 @@ class Pager_Sliding
      */
     var $_pearErrorMode = null;
 
-    // }}}
 
     /**
      * @var string Complete set of links
@@ -352,8 +354,9 @@ class Pager_Sliding
      *  - itemData OR totalItems (if itemData is set, totalItems is overwritten)
      * -------------------------------------------------------------------------
      *
-     * @param mixed $options    An associative array of option names and
-     *                          their values.
+     * @param mixed $options An associative array of option names and
+     *                       their values.
+     *
      * @access public
      */
     function Pager_Sliding($options = array())
@@ -381,7 +384,8 @@ class Pager_Sliding
     /**
      * Returns an array of current pages data
      *
-     * @param $pageID Desired page ID (optional)
+     * @param int $pageID Desired page ID (optional)
+     *
      * @return array Page data
      * @access public
      */
@@ -407,11 +411,15 @@ class Pager_Sliding
 
     /**
      * "Overload" PEAR::Pager method. VOID. Not needed here...
+     *
      * @param integer $index Offset to get pageID for
+     *
      * @deprecated
      * @access public
      */
-    function getPageIdByOffset($index = null) { }
+    function getPageIdByOffset($index = null) 
+    { 
+    }
 
     // }}}
     // {{{ getOffsetByPageId()
@@ -423,6 +431,7 @@ class Pager_Sliding
      * give you 11 and 20.
      *
      * @param integer PageID to get offsets for
+     *
      * @return array  First and last offsets
      * @access public
      */
@@ -454,7 +463,8 @@ class Pager_Sliding
      * PageID of 9 would give you (4, 8).
      * If the method is called without parameter, pageID is set to currentPage#.
      *
-     * @param integer PageID to get offsets for
+     * @param integer $pageid PageID to get offsets for
+     *
      * @return array  First and last offsets
      * @access public
      */
@@ -603,7 +613,8 @@ class Pager_Sliding
      * both as ordered and associative array.
      *
      * @param integer $pageID Optional pageID. If specified, links
-     *                for that page are provided instead of current one.
+     *                        for that page are provided instead of current one.
+     *
      * @return array back/pages/next/first/last/all links
      * @access public
      */
@@ -611,6 +622,7 @@ class Pager_Sliding
     {
         if (!is_null($pageID)) {
             $_sav = $this->_currentPage;
+
             $this->_currentPage = $pageID;
 
             $this->links = '';
@@ -665,6 +677,7 @@ class Pager_Sliding
      * @param integer $start
      * @param integer $end
      * @param integer $step
+     *
      * @return string xhtml select box
      * @access public
      */
@@ -711,13 +724,14 @@ class Pager_Sliding
                     $_expansion_before = 0;
                 }
                 for ($i = $this->_currentPage - $this->_delta - $_expansion_before; $_expansion_before; $_expansion_before--, $i++) {
-                    if (($i != $this->_currentPage + $this->_delta)){ // && ($i != $this->_totalPages - 1)) {
+                    if (($i != $this->_currentPage + $this->_delta)) {
                         $_print_separator_flag = true;
                     } else {
                         $_print_separator_flag = false;
                     }
 
                     $this->range[$i] = false;
+
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
@@ -745,11 +759,13 @@ class Pager_Sliding
 
                 if ($i == $this->_currentPage) {
                     $this->range[$i] = true;
+
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost
                                  . $this->_spacesBefore
                                  . ($_print_separator_flag ? $this->_separator.$this->_spacesAfter : '');
                 } else {
                     $this->range[$i] = false;
+
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
@@ -764,12 +780,13 @@ class Pager_Sliding
                 $links .= $this->_separator . $this->_spacesAfter;
                 for ($i = $this->_currentPage + $this->_delta +1; $_expansion_after; $_expansion_after--, $i++) {
                     if (($_expansion_after != 1)) {
-                       $_print_separator_flag = true;
+                        $_print_separator_flag = true;
                     } else {
                         $_print_separator_flag = false;
                     }
 
                     $this->range[$i] = false;
+
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                         ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                         $this->_classString,
@@ -785,6 +802,7 @@ class Pager_Sliding
             for ($i=1; $i<=$this->_totalPages; $i++) {
                 if ($i != $this->_currentPage) {
                     $this->range[$i] = false;
+
                     $links .= sprintf('<a href="%s" %s title="%s">%d</a>',
                                     ( $this->_append ? $this->_url.$i : $this->_url.sprintf($this->_fileName, $i) ),
                                     $this->_classString,
@@ -792,6 +810,7 @@ class Pager_Sliding
                                     $i);
                 } else {
                     $this->range[$i] = true;
+
                     $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
                 }
                 $links .= $this->_spacesBefore
@@ -801,7 +820,9 @@ class Pager_Sliding
 
         if ($this->_clearIfVoid) {
             //If there's only one page, don't display links
-            if ($this->_totalPages < 2) $links = '';
+            if ($this->_totalPages < 2) {
+                $links = '';
+            }
         }
 
         return $links;
@@ -813,8 +834,6 @@ class Pager_Sliding
     /**
      * Returns back link
      *
-     * @param  string $url  URL to use in the link
-     * @param  string $link HTML to use as the link
      * @return string The link
      * @access private
      */
@@ -919,6 +938,7 @@ class Pager_Sliding
      * Calculates all page data
      *
      * @access private
+     * @return void
      */
     function _generatePageData()
     {
@@ -926,7 +946,9 @@ class Pager_Sliding
         if (!is_null($this->_itemData)) {
             $this->_totalItems = count($this->_itemData);
         }
+
         $this->_totalPages = ceil((float)$this->_totalItems / (float)$this->_perPage);
+
         $i = 1;
         if (!empty($this->_itemData)) {
             foreach ($this->_itemData as $key => $value) {
@@ -952,6 +974,7 @@ class Pager_Sliding
      * based on whether they were set in the options
      *
      * @access private
+     * @return void
      */
     function _setFirstLastText()
     {
@@ -977,7 +1000,8 @@ class Pager_Sliding
     {
         // Sort out query string to prevent messy urls
         $querystring = array();
-        $qs = array();
+        $qs          = array();
+
         if (!empty($_SERVER['QUERY_STRING'])) {
             $qs = explode('&', str_replace('&amp;', '&', $_SERVER['QUERY_STRING']));
             for ($i=0, $cnt=count($qs); $i<$cnt; $i++) {
@@ -1005,7 +1029,9 @@ class Pager_Sliding
      *
      * @param string $msg  Error message
      * @param int    $code Error code
+     *
      * @access private
+     * @return void
      */
     function raiseError($msg, $code)
     {
@@ -1022,9 +1048,11 @@ class Pager_Sliding
     /**
      * Set and sanitize options
      *
-     * @param mixed $options    An associative array of option names and
-     *                          their values.
+     * @param mixed $options An associative array of option names and
+     *                       their values.
+     *
      * @access private
+     * @return void
      */
     function _setOptions($options)
     {
@@ -1072,10 +1100,11 @@ class Pager_Sliding
 
         if ($this->_append) {
             $this->_fileName = CURRENT_FILENAME; //avoid easy-verified user error;
+
             $this->_url = $this->_path.'/'.$this->_fileName.$this->_getLinksUrl();
         } else {
             $this->_url = $this->_path.'/';
-            if (!strstr($this->_fileName,'%d')) {
+            if (!strstr($this->_fileName, '%d')) {
                 $msg = '<b>Pager_Sliding Error:</b>'
                       .' "fileName" format not valid. Use "%d" as placeholder.';
                 return $this->raiseError($msg, ERROR_PAGER_SLIDING_INVALID);

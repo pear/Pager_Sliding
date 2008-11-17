@@ -46,6 +46,7 @@ if (!defined('ERROR_PAGER_SLIDING_INVALID')) {
  * @author   Lorenzo Alberton <l.alberton@quipo.it>
  * @license  PHP 2.02 http://www.php.net/license/2_02.txt
  * @link     http://pear.php.net/package/Pager_Sliding
+ */
 class Pager_Sliding
 {
 

@@ -1,0 +1,25 @@
+{
+    "authors": [
+        {
+            "email": "l.alberton@quipo.it",
+            "name": "Lorenzo Alberton",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "./"
+        ]
+    },
+    "description": "More info available on: http://pear.php.net/package/Pager_Sliding",
+    "license": "PHP License",
+    "name": "pear/pager_sliding",
+    "support": {
+        "issues": "http:///bugs/search.php?cmd=display&package_name[]=Pager_Sliding",
+        "source": "https://github.com/pear/Pager_Sliding"
+    },
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
